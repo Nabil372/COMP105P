@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/Prog.dir/spinLeftRight.c.o  -o Prog -rdynamic ../src/libclient.a -lpthread 

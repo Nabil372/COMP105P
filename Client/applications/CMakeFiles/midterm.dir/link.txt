@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/midterm.dir/midterm.c.o  -o midterm -rdynamic ../src/libclient.a -lpthread 

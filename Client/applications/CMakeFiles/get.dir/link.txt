@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/get.dir/getDistance.c.o  -o get -rdynamic ../src/libclient.a -lpthread 

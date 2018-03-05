@@ -1,0 +1,1 @@
+/usr/bin/c++        -o DrawSquare -rdynamic ../src/libclient.a -lpthread 

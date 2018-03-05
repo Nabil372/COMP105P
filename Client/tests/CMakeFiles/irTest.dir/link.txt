@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/irTest.dir/irTest.c.o  -o irTest -rdynamic ../src/libclient.a -lpthread 

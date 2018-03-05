@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/testDriveGoto.dir/testDriveGoto.c.o  -o testDriveGoto -rdynamic ../src/libclient.a -lpthread 
