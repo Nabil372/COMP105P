@@ -10,36 +10,36 @@
 int compensation = 0;
 int irRight;
 int irLeft;
-int block = 135;
+int block = 130;
 
 static void turnThroughAngle(int angle)
 {
     int ticks = (int) round(angle*0.284);
     if (angle > 0)
     {
-        if (compensation == 0)
-        {
-            drive_goto(-ticks , ticks - 1);
-            compensation = 1;
-        }
-        else
-        {
+        //if (compensation == 0)
+        //{
+            //drive_goto(-ticks , ticks - 1);
+            //compensation = 1;
+        //}
+        //else
+        //{
             drive_goto(-ticks , ticks);
-            compensation = 0;
-        }
+            //compensation = 0;
+        //}
     }
     else
     {
-        if (compensation == 0)
-        {
-        drive_goto(-ticks + 1, ticks );
-        compensation = 1;
-        }
-        else
-        {
+        //if (compensation == 0)
+        //{
+        //drive_goto(-ticks + 1, ticks );
+        //compensation = 1;
+        //}}
+        //else
+        //{
         drive_goto(-ticks , ticks);
-        compensation = 0;
-        }
+        //compensation = 0;
+        //}
     } 
 
 }
@@ -70,15 +70,22 @@ int main(int argc, const char* argv[])
     drive_goto(20,20);
     while(1)
     {
-    	drive_goto(block,block);
+    	int ditanceFromFront = ping_cm(8);
+    	if (ditanceFromFront>(block/3.25)){
+    		drive_goto(block,block);
+    	}
+    	if ((15-ditanceFromFront)>0){
+    		drive_goto(-(15-ditanceFromFront)*3.25,-(15-ditanceFromFront)*3.25);
+    	}
     	InfaRed();
 ;    	printf("left = %d\n", irLeft);
     	if (irLeft == 20) 
     	{
     		turnThroughAngle(90);
     	} 
-    	else if (ping_cm(8) > 25) 
+    	else if (ditanceFromFront > 25) 
     	{
+
     	continue;
 
     	}
