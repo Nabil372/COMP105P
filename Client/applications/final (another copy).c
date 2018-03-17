@@ -9,17 +9,14 @@
 
 int irRight;
 int irLeft;
-int distanceFromFront;
-int block = 125; //126
+int block = 130; //126
 
 int direction = 1; //we are initially facing forwards, so 1 is used to represent goin forwards.
 int position = 0; // our initial postion is at 0
 int last_turn = 0; // last_turn = 0 means that our last was a left turn and last turn being right means last_turn = 1. 
 
-int Disconnected[150]; //This is a list in which we store disconnected blocks.
+int Disconnected[100]; //This is a list in which we store disconnected blocks.
 int DisconnectedCount = 0; //This allows us to print a list of disconnected blocks, and also 
-
-
 
 int modulo(int x,int N)
 {
@@ -110,44 +107,25 @@ void InfaRed()
         irRight += input(2);
     }
     printf("%d,%d\n", irLeft,irRight);
-    if (irLeft<17)
-    {
+    if (irLeft<17){
     	updateDirection(-1);
     	Disconnected[DisconnectedCount] = position;
     	Disconnected[DisconnectedCount+1] = updatePosition(0);
     	printf("-------%d,%d-------\n",Disconnected[DisconnectedCount],Disconnected[DisconnectedCount+1]);
     	DisconnectedCount += 2;
-    	updateDirection(+1);
-    	printf("\n"); 
+    	updateDirection(+1); // maybe the error is here
     }
-    if (irRight<17)
-    {
+    if (irRight<17){
     	updateDirection(1);
     	Disconnected[DisconnectedCount] = position;
     	Disconnected[DisconnectedCount+1] = updatePosition(0);
     	printf("=====%d,%d=====\n",Disconnected[DisconnectedCount],Disconnected[DisconnectedCount+1]);
     	DisconnectedCount += 2;
-    	updateDirection(-1);
-    	printf("\n"); 
+    	updateDirection(-1); // maybe the error is here
     }
 
-    int distanceFromFront = ping_cm(8);
-    printf("distanceFromFront: %d\n", distanceFromFront );
-    printf("\n");
-    if (distanceFromFront < 25)
-    {
-    	
-    	printf("Front is blocked:\n");
-    	Disconnected[DisconnectedCount] = position;
-    	Disconnected[DisconnectedCount+1] = updatePosition(0);
-    	printf("++++++%d,%d++++++\n",position, updatePosition(0));
-    	DisconnectedCount += 2;
-    	printf("\n");
-    	
-    }
-    //there used to be a return here    
+	return;    
 }
-
 
 
 int main(int argc, const char* argv[])
@@ -155,17 +133,17 @@ int main(int argc, const char* argv[])
     low(26);
     low(27);
 
-
-    drive_goto(20,20);
+    drive_goto(20,20);//why is this here?
 
     direction = 1;//forward
     position = 0;
 
     while(1)
     {
+
     	int distanceFromFront = ping_cm(8);
 
-    	if (distanceFromFront > (block / 3.25)) //if front is free? why is this here?
+    	if (distanceFromFront > (block / 3.25))
     	{
     		drive_goto(block,block);
     		updatePosition(1);
@@ -189,16 +167,13 @@ int main(int argc, const char* argv[])
     		}
 
     	}
-    	/*else if (distanceFromFront < 25) //front is blocked?
+    	else
     	{
-    		printf("distanceFromFront: %d\n", distanceFromFront);
-    		printf("Front is blocked:\n");
     		Disconnected[DisconnectedCount] = position;
     		Disconnected[DisconnectedCount+1] = updatePosition(0);
     		DisconnectedCount += 2;
-    		printf("££££%d,%d££££\n",position, updatePosition(0));
-    		printf("\n");
-    	}*/
+    		printf("%d , %d\n",position, updatePosition(0));
+    	}
     	//Do not go too close
     	if ((15-distanceFromFront)>0)
     	{
@@ -247,6 +222,4 @@ int main(int argc, const char* argv[])
     for (int i = 0;i<DisconnectedCount;i+=2){
     	printf("%d,%d\n", Disconnected[i],Disconnected[i+1]);
     }
-
-    
 }

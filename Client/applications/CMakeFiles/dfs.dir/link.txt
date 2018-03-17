@@ -1,0 +1,1 @@
+/usr/bin/c++      CMakeFiles/dfs.dir/dfs.c.o  -o dfs -rdynamic ../src/libclient.a -lpthread 
