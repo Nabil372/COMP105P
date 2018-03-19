@@ -17,3 +17,4 @@ DECLARE_APP(testChangeEncoderTicks testChangeEncoderTicks.c)
 DECLARE_APP(testGetPose testGetPose.c)
 DECLARE_APP(testSmokeTrail testSmokeTrail.c)
 
+
