@@ -93,23 +93,55 @@ void driveBack(int array[], int size){
         printf("move: %d\n",move );
 
         if (move == 1){
-            drive_goto(130,130);
-            i++;
-            continue;
+            int nextMove = array[i+2] - array[i+1];
+            if (nextMove == 1){
+                drive_goto(260,260);
+                i = i + 2;
+                continue;
+            }
+            else
+            {
+                drive_goto(130,130);
+                i++;
+                continue;
+            }
+            
         }
         else if (move == 4){
+            int nextMove = array[i+2] - array[i+1];
+            if (nextMove == 4){
+                turnThroughAngle(-90);
+                drive_goto(260,260);
+                turnThroughAngle(90);
+                i = i + 2;
+                continue;
+            }
+            else
+            {
             turnThroughAngle(-90);
             drive_goto(130,130);
             turnThroughAngle(90);
             i++;
             continue;
+            }
         }
         else if (move == -4){
+            int nextMove = array[i+2] - array[i+1];
+            if (nextMove == -4){
+                turnThroughAngle(90);
+                drive_goto(260,260);
+                turnThroughAngle(-90);
+                i = i + 2;
+                continue;
+            }
+            else
+            {
             turnThroughAngle(90);
             drive_goto(130,130);
             turnThroughAngle(-90);
             i++;
             continue;
+            }
         }
     }
 
@@ -263,6 +295,7 @@ int main(int argc, const char* argv[])
     }
     
     dijkstra(0,16);
+    
     pause(1000);
 
     driveBack(bestpath,pathsize);
