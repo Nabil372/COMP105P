@@ -11,7 +11,11 @@
 int irRight;
 int irLeft;
 int distanceFromFront;
-int block = 125; //126
+int block = 126; //126 125
+int left_counter = 0;
+int right_counter = 0;
+int left_counter180 = 0;
+int right_counter180 = 0;
 
 int direction = 1; //we are initially facing forwards, so 1 is used to represent goin forwards.
 int position = 0; // our initial postion is at 0
@@ -95,13 +99,13 @@ void driveBack(int array[], int size){
         if (move == 1){
             int nextMove = array[i+2] - array[i+1];
             if (nextMove == 1){
-                drive_goto(260,260);
+                drive_goto(block * 2,block * 2);
                 i = i + 2;
                 continue;
             }
             else
             {
-                drive_goto(130,130);
+                drive_goto(block,block);
                 i++;
                 continue;
             }
@@ -111,7 +115,7 @@ void driveBack(int array[], int size){
             int nextMove = array[i+2] - array[i+1];
             if (nextMove == 4){
                 turnThroughAngle(-90);
-                drive_goto(260,260);
+                drive_goto(block * 2,block * 2);
                 turnThroughAngle(90);
                 i = i + 2;
                 continue;
@@ -119,7 +123,7 @@ void driveBack(int array[], int size){
             else
             {
             turnThroughAngle(-90);
-            drive_goto(130,130);
+            drive_goto(block,block);
             turnThroughAngle(90);
             i++;
             continue;
@@ -129,7 +133,7 @@ void driveBack(int array[], int size){
             int nextMove = array[i+2] - array[i+1];
             if (nextMove == -4){
                 turnThroughAngle(90);
-                drive_goto(260,260);
+                drive_goto(block * 2,block * 2);
                 turnThroughAngle(-90);
                 i = i + 2;
                 continue;
@@ -137,7 +141,7 @@ void driveBack(int array[], int size){
             else
             {
             turnThroughAngle(90);
-            drive_goto(130,130);
+            drive_goto(block,block);
             turnThroughAngle(-90);
             i++;
             continue;
@@ -162,7 +166,7 @@ void Sense()
         irRight += input(2);
     }
     printf("%d,%d\n", irLeft,irRight);
-    if (irLeft>19)
+    if (irLeft == 20)
     {
     	updateDirection(-1);
     	Connected[ConnectedCount] = position;
@@ -172,7 +176,7 @@ void Sense()
     	updateDirection(+1);
     	printf("\n"); 
     }
-    if (irRight>19)
+    if (irRight == 20)
     {
     	updateDirection(1);
     	Connected[ConnectedCount] = position;
@@ -208,7 +212,7 @@ int main(int argc, const char* argv[])
     low(27);
 
 
-    drive_goto(20,20);
+    drive_goto(30,30);
 
     direction = 1;//forward
     position = 0;
@@ -251,6 +255,7 @@ int main(int argc, const char* argv[])
     	if (irLeft == 20) 
     	{
     		last_turn = 0;
+            left_counter++;
     		updateDirection(-1);
     		turnThroughAngle(90);
     	} 
@@ -263,6 +268,7 @@ int main(int argc, const char* argv[])
     	else if (irRight == 20) 
     	{
     		last_turn = 1;
+            right_counter++;
     		updateDirection(+1);
     		turnThroughAngle(-90);
     	}
@@ -272,10 +278,12 @@ int main(int argc, const char* argv[])
     			updateDirection(-2);
     			turnThroughAngle(180);
     			last_turn = 0;
+                left_counter180++;
     		}else{
     			updateDirection(2);
     			turnThroughAngle(-180);
     			last_turn = 1;
+                right_counter180++;
     		}
     		
     		
@@ -293,7 +301,13 @@ int main(int argc, const char* argv[])
     	}
     	printf("\n");
     }
-    
+    printf("left_counter: %d, right_counter: %d\n",left_counter, right_counter);
+    int counts = left_counter - right_counter;
+    int counts180 = left_counter180 - right_counter180;
+    printf("180 counts: %d", counts180);
+    printf("\n");
+    printf("counts: %d\n", counts );
+    turnThroughAngle((-counts * 0.56) + (counts180 * 0.12));
     dijkstra(0,16);
     
     pause(1000);
