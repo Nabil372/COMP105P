@@ -6,18 +6,23 @@
 #include "simpletext.h"
 #include "simpletools.h"
 #include "ping.h"
+#include "dijk.h"
 
 int irRight;
 int irLeft;
 int distanceFromFront;
-int block = 125; //126
+int block = 126; //126 125
+int left_counter = 0;
+int right_counter = 0;
+int left_counter180 = 0;
+int right_counter180 = 0;
 
 int direction = 1; //we are initially facing forwards, so 1 is used to represent goin forwards.
 int position = 0; // our initial postion is at 0
 int last_turn = 0; // last_turn = 0 means that our last was a left turn and last turn being right means last_turn = 1. 
 
-int Disconnected[150]; //This is a list in which we store disconnected blocks.
-int DisconnectedCount = 0; //This allows us to print a list of disconnected blocks, and also 
+int Connected[150]; //This is a list in which we store Connected blocks.
+int ConnectedCount = 0; //This allows us to print a list of Connected blocks, and also 
 
 
 
@@ -81,21 +86,72 @@ int updatePosition(int set)
 	return 0;
 }
 
-static void turnThroughAngle(int angle)
-{
-    int ticks = (int) round(angle*0.284);
-    if (angle > 0)
+void driveBack(int array[], int size){
+    int i = 0;
+    while (i < size)
     {
-        drive_goto(-ticks , ticks);
+        int move = array[i+1] - array[i];
+        if (move == -16){
+            break;
+        }
+        printf("move: %d\n",move );
+
+        if (move == 1){
+            int nextMove = array[i+2] - array[i+1];
+            if (nextMove == 1){
+                drive_goto(block * 2,block * 2);
+                i = i + 2;
+                continue;
+            }
+            else
+            {
+                drive_goto(block,block);
+                i++;
+                continue;
+            }
+            
+        }
+        else if (move == 4){
+            int nextMove = array[i+2] - array[i+1];
+            if (nextMove == 4){
+                turnThroughAngle(-90);
+                drive_goto(block * 2,block * 2);
+                turnThroughAngle(90);
+                i = i + 2;
+                continue;
+            }
+            else
+            {
+            turnThroughAngle(-90);
+            drive_goto(block,block);
+            turnThroughAngle(90);
+            i++;
+            continue;
+            }
+        }
+        else if (move == -4){
+            int nextMove = array[i+2] - array[i+1];
+            if (nextMove == -4){
+                turnThroughAngle(90);
+                drive_goto(block * 2,block * 2);
+                turnThroughAngle(-90);
+                i = i + 2;
+                continue;
+            }
+            else
+            {
+            turnThroughAngle(90);
+            drive_goto(block,block);
+            turnThroughAngle(-90);
+            i++;
+            continue;
+            }
+        }
     }
-    else
-    {
-        drive_goto(-ticks , ticks);
-    } 
 
 }
 
-void InfaRed() 
+void Sense() 
 {    
    	irLeft = 0;
     irRight = 0;
@@ -110,23 +166,23 @@ void InfaRed()
         irRight += input(2);
     }
     printf("%d,%d\n", irLeft,irRight);
-    if (irLeft<17)
+    if (irLeft == 20)
     {
     	updateDirection(-1);
-    	Disconnected[DisconnectedCount] = position;
-    	Disconnected[DisconnectedCount+1] = updatePosition(0);
-    	printf("-------%d,%d-------\n",Disconnected[DisconnectedCount],Disconnected[DisconnectedCount+1]);
-    	DisconnectedCount += 2;
+    	Connected[ConnectedCount] = position;
+    	Connected[ConnectedCount+1] = updatePosition(0);
+    	printf("-------%d,%d-------\n",Connected[ConnectedCount],Connected[ConnectedCount+1]);
+    	ConnectedCount += 2;
     	updateDirection(+1);
     	printf("\n"); 
     }
-    if (irRight<17)
+    if (irRight == 20)
     {
     	updateDirection(1);
-    	Disconnected[DisconnectedCount] = position;
-    	Disconnected[DisconnectedCount+1] = updatePosition(0);
-    	printf("=====%d,%d=====\n",Disconnected[DisconnectedCount],Disconnected[DisconnectedCount+1]);
-    	DisconnectedCount += 2;
+    	Connected[ConnectedCount] = position;
+    	Connected[ConnectedCount+1] = updatePosition(0);
+    	printf("=====%d,%d=====\n",Connected[ConnectedCount],Connected[ConnectedCount+1]);
+    	ConnectedCount += 2;
     	updateDirection(-1);
     	printf("\n"); 
     }
@@ -134,14 +190,14 @@ void InfaRed()
     int distanceFromFront = ping_cm(8);
     printf("distanceFromFront: %d\n", distanceFromFront );
     printf("\n");
-    if (distanceFromFront < 25)
+    if (distanceFromFront > 25)
     {
     	
-    	printf("Front is blocked:\n");
-    	Disconnected[DisconnectedCount] = position;
-    	Disconnected[DisconnectedCount+1] = updatePosition(0);
+    	printf("Front is free:\n");
+    	Connected[ConnectedCount] = position;
+    	Connected[ConnectedCount+1] = updatePosition(0);
     	printf("++++++%d,%d++++++\n",position, updatePosition(0));
-    	DisconnectedCount += 2;
+    	ConnectedCount += 2;
     	printf("\n");
     	
     }
@@ -156,7 +212,7 @@ int main(int argc, const char* argv[])
     low(27);
 
 
-    drive_goto(20,20);
+    drive_goto(30,30);
 
     direction = 1;//forward
     position = 0;
@@ -189,26 +245,17 @@ int main(int argc, const char* argv[])
     		}
 
     	}
-    	/*else if (distanceFromFront < 25) //front is blocked?
-    	{
-    		printf("distanceFromFront: %d\n", distanceFromFront);
-    		printf("Front is blocked:\n");
-    		Disconnected[DisconnectedCount] = position;
-    		Disconnected[DisconnectedCount+1] = updatePosition(0);
-    		DisconnectedCount += 2;
-    		printf("££££%d,%d££££\n",position, updatePosition(0));
-    		printf("\n");
-    	}*/
-    	//Do not go too close
+    	
     	if ((15-distanceFromFront)>0)
     	{
     		drive_goto(-(15-distanceFromFront)*3.25,-(15-distanceFromFront)*3.25);
     	}
 
-    	InfaRed();
+    	Sense();
     	if (irLeft == 20) 
     	{
     		last_turn = 0;
+            left_counter++;
     		updateDirection(-1);
     		turnThroughAngle(90);
     	} 
@@ -221,22 +268,22 @@ int main(int argc, const char* argv[])
     	else if (irRight == 20) 
     	{
     		last_turn = 1;
+            right_counter++;
     		updateDirection(+1);
     		turnThroughAngle(-90);
     	}
     	else 
     	{
-    		Disconnected[DisconnectedCount] = position;
-    		Disconnected[DisconnectedCount+1] = updatePosition(0);
-    		DisconnectedCount += 2;
     		if (last_turn == 1){
     			updateDirection(-2);
     			turnThroughAngle(180);
     			last_turn = 0;
+                left_counter180++;
     		}else{
     			updateDirection(2);
     			turnThroughAngle(-180);
     			last_turn = 1;
+                right_counter180++;
     		}
     		
     		
@@ -244,9 +291,29 @@ int main(int argc, const char* argv[])
 
     }
 
-    for (int i = 0;i<DisconnectedCount;i+=2){
-    	printf("%d,%d\n", Disconnected[i],Disconnected[i+1]);
+    for (int i = 0;i<ConnectedCount;i+=2){
+    	printf("%d,%d\n", Connected[i],Connected[i+1]);
     }
+    populateGraph(Connected,ConnectedCount);
+    for (int i = 0;i<17;i++){
+    	for (int j = 0;j<17;j++){
+    		printf("%d,",graph[i][j]);
+    	}
+    	printf("\n");
+    }
+    printf("left_counter: %d, right_counter: %d\n",left_counter, right_counter);
+    int counts = left_counter - right_counter;
+    int counts180 = left_counter180 - right_counter180;
+    printf("180 counts: %d", counts180);
+    printf("\n");
+    printf("counts: %d\n", counts );
+    turnThroughAngle((-counts * 0.56) + (counts180 * 0.12));
+    dijkstra(0,16);
+    
+    pause(1000);
+
+    driveBack(bestpath,pathsize);
+
 
     
 }

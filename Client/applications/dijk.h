@@ -59,7 +59,6 @@ void reverseArray(int *array, int size){
 
 void turnThroughAngle(int angle){
 	int ticks = (int) round(angle*0.284);
-	printf("%d\n", ticks);
     if (angle > 0)
     {
         drive_goto(-ticks , ticks);

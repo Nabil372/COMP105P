@@ -17,6 +17,9 @@ int right_counter = 0;
 int left_counter180 = 0;
 int right_counter180 = 0;
 
+int drivespeed = 60;
+int driveturn = 40;
+
 int direction = 1; //we are initially facing forwards, so 1 is used to represent goin forwards.
 int position = 0; // our initial postion is at 0
 int last_turn = 0; // last_turn = 0 means that our last was a left turn and last turn being right means last_turn = 1. 
@@ -87,14 +90,20 @@ int updatePosition(int set)
 }
 
 void driveBack(int array[], int size){
+    direction = 1;
     int i = 0;
     while (i < size)
     {
         int move = array[i+1] - array[i];
-        if (move == -16){
-            break;
-        }
+        if (move == -16){break;}
+
         printf("move: %d\n",move );
+        printf("direction before checks: %d\n",direction );
+
+        if (direction == 1){}
+        else if (direction == 2){ turnThroughAngle(90); updateDirection(-1);}
+        else if (direction == 0){turnThroughAngle(-90); updateDirection(+1);}
+        printf("direction after checks: %d\n",direction );
 
         if (move == 1){
             int nextMove = array[i+2] - array[i+1];
@@ -115,16 +124,18 @@ void driveBack(int array[], int size){
             int nextMove = array[i+2] - array[i+1];
             if (nextMove == 4){
                 turnThroughAngle(-90);
+                updateDirection(+1);
                 drive_goto(block * 2,block * 2);
-                turnThroughAngle(90);
+                
                 i = i + 2;
                 continue;
             }
             else
             {
             turnThroughAngle(-90);
+            updateDirection(+1);
             drive_goto(block,block);
-            turnThroughAngle(90);
+            
             i++;
             continue;
             }
@@ -133,16 +144,18 @@ void driveBack(int array[], int size){
             int nextMove = array[i+2] - array[i+1];
             if (nextMove == -4){
                 turnThroughAngle(90);
+                updateDirection(-1);
                 drive_goto(block * 2,block * 2);
-                turnThroughAngle(-90);
+                
                 i = i + 2;
                 continue;
             }
             else
             {
+            updateDirection(-1);
             turnThroughAngle(90);
             drive_goto(block,block);
-            turnThroughAngle(-90);
+            
             i++;
             continue;
             }
@@ -311,6 +324,7 @@ int main(int argc, const char* argv[])
     dijkstra(0,16);
     
     pause(1000);
+
 
     driveBack(bestpath,pathsize);
 
