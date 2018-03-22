@@ -111,6 +111,21 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+applications/CMakeFiles/test.dir/rule:
+	cd /home/nabil/Documents/COMP105P/Client && $(MAKE) -f CMakeFiles/Makefile2 applications/CMakeFiles/test.dir/rule
+.PHONY : applications/CMakeFiles/test.dir/rule
+
+# Convenience name for target.
+test: applications/CMakeFiles/test.dir/rule
+
+.PHONY : test
+
+# fast build rule for target.
+test/fast:
+	cd /home/nabil/Documents/COMP105P/Client && $(MAKE) -f applications/CMakeFiles/test.dir/build.make applications/CMakeFiles/test.dir/build
+.PHONY : test/fast
+
+# Convenience name for target.
 applications/CMakeFiles/final.dir/rule:
 	cd /home/nabil/Documents/COMP105P/Client && $(MAKE) -f CMakeFiles/Makefile2 applications/CMakeFiles/final.dir/rule
 .PHONY : applications/CMakeFiles/final.dir/rule
@@ -194,6 +209,33 @@ midterm.c.s:
 	cd /home/nabil/Documents/COMP105P/Client && $(MAKE) -f applications/CMakeFiles/midterm.dir/build.make applications/CMakeFiles/midterm.dir/midterm.c.s
 .PHONY : midterm.c.s
 
+test.o: test.c.o
+
+.PHONY : test.o
+
+# target to build an object file
+test.c.o:
+	cd /home/nabil/Documents/COMP105P/Client && $(MAKE) -f applications/CMakeFiles/test.dir/build.make applications/CMakeFiles/test.dir/test.c.o
+.PHONY : test.c.o
+
+test.i: test.c.i
+
+.PHONY : test.i
+
+# target to preprocess a source file
+test.c.i:
+	cd /home/nabil/Documents/COMP105P/Client && $(MAKE) -f applications/CMakeFiles/test.dir/build.make applications/CMakeFiles/test.dir/test.c.i
+.PHONY : test.c.i
+
+test.s: test.c.s
+
+.PHONY : test.s
+
+# target to generate assembly for a file
+test.c.s:
+	cd /home/nabil/Documents/COMP105P/Client && $(MAKE) -f applications/CMakeFiles/test.dir/build.make applications/CMakeFiles/test.dir/test.c.s
+.PHONY : test.c.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -201,15 +243,19 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... rebuild_cache"
+	@echo "... test"
 	@echo "... final"
 	@echo "... midterm"
+	@echo "... rebuild_cache"
 	@echo "... final.o"
 	@echo "... final.i"
 	@echo "... final.s"
 	@echo "... midterm.o"
 	@echo "... midterm.i"
 	@echo "... midterm.s"
+	@echo "... test.o"
+	@echo "... test.i"
+	@echo "... test.s"
 .PHONY : help
 
 

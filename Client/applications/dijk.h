@@ -57,16 +57,9 @@ void reverseArray(int *array, int size){
     }    
 }
 
-void turnThroughAngle(int angle){
-	int ticks = (int) round(angle*0.284);
-    if (angle > 0)
-    {
-        drive_goto(-ticks , ticks);
-    }
-    else
-    {
-        drive_goto(-ticks , ticks);
-    }
+void turnThroughAngle(double angle){
+	int ticks = (int)(angle*0.284);
+    drive_goto(-ticks , ticks);
 }
 
 
